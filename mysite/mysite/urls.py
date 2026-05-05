@@ -22,5 +22,7 @@ from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', views.boardview, name='index'),
-    path('post/', views.newpost, name='post')
+    path('post/', views.newpost, name='post'),
+    path('login/', views.login, name='login'),
+    path('login/submit_login/', views.loginHandle, name='login'),
 ]

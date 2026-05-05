@@ -1,0 +1,15 @@
+<html>
+    <head>
+        <title>login</title>
+    </head>
+    <body>
+        <form action="submit_login/" method="post">
+            {% csrf_token %}
+            <ul style="list-style: none;">
+                <li>Username <input type="text" name="username">
+                <li>Password <input type="password" name="password">
+                <li><input type="submit" value="Log in">
+            </ul>
+        </form>
+    </body>
+</html>
