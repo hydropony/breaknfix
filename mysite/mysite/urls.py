@@ -25,4 +25,6 @@ urlpatterns = [
     path('post/', views.newpost, name='post'),
     path('login/', views.login, name='login'),
     path('login/submit_login/', views.loginHandle, name='login'),
+    path('logout/', views.logout, name='logout'),
+    
 ]

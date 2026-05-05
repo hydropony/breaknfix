@@ -4,10 +4,16 @@
 </head>
 <body>
     <h1>Board</h1>
-    <form action="post/" method="POST">
+    <h3>Welcome, {{ user }}</h3>
+    <form action="logout/" method="POST">
+        {% csrf_token % }
+        <input type="submit" value="Log out">
+    </form>
+    <h4>New post:</h4>
+    <form action="post/" method="POST" style="display: flex; flex-direction: column;">
         {% csrf_token %}
-        <input type="text" name="title">
-        <input type="text" name="body">
+        Title <input type="text" name="title">
+        Body <input type="text" name="body">
         <input type="submit" value="send">
     </form>
     <ul>
