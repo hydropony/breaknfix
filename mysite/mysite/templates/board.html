@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Board</title>
+</head>
+<body>
+    <h1>Board</h1>
+    <form action="post/" method="POST">
+        {% csrf_token %}
+        <input type="text" name="title">
+        <input type="text" name="body">
+        <input type="submit" value="send">
+    </form>
+    <ul>
+        {% for post in posts %}
+            <li>
+                <h2>{{ post.title }}</h2>
+                {{ post.body }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
