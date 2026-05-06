@@ -29,6 +29,11 @@
                             {% csrf_token %}
                             <button type="submit">Delete</button>
                         </form>
+                        <!-- <form action="delete/" method="POST"> CSRF fix
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ post.id }}" name="id">
+                            <button type="submit">Delete</button>
+                        </form> -->
                     {% endif %}
                 </li>
             {% endfor %}
