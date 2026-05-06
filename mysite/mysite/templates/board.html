@@ -1,28 +1,37 @@
 <html>
-<head>
-    <title>Board</title>
-</head>
-<body>
-    <h1>Board</h1>
-    <h3>Welcome, {{ user }}</h3>
-    <form action="logout/" method="POST">
-        {% csrf_token % }
-        <input type="submit" value="Log out">
-    </form>
-    <h4>New post:</h4>
-    <form action="post/" method="POST" style="display: flex; flex-direction: column;">
-        {% csrf_token %}
-        Title <input type="text" name="title">
-        Body <input type="text" name="body">
-        <input type="submit" value="send">
-    </form>
-    <ul>
-        {% for post in posts %}
-            <li>
-                <h2>{{ post.title }}</h2>
-                {{ post.body }}
-            </li>
-        {% endfor %}
-    </ul>
-</body>
+    <head>
+        <title>Board</title>
+    </head>
+    <body>
+        <h1>Board</h1>
+        <h3>Welcome, {{ user }}</h3>
+        <form action="logout/" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Log out">
+        </form>
+        <h4>New post:</h4>
+        <form action="post/" method="POST" style="display: flex; flex-direction: column;">
+            {% csrf_token %}
+            Title <input type="text" name="title">
+            Body <input type="text" name="body">
+            <input type="submit" value="send">
+        </form>
+
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <h2>{{ post.title }}</h2>
+                    By {{ post.author }} - {{ post.pub_date }}
+                    <p>{{ post.body }}</p>
+
+                    {% if post.id in myposts %}
+                        <form action="delete/{{ post.id }}/" method="POST">
+                            {% csrf_token %}
+                            <button type="submit">Delete</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </body>
 </html>

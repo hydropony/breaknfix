@@ -36,19 +36,27 @@ def loginHandle(request):
 
 def boardview(request):
     username = get_username(request)
+    user = User.objects.filter(username=username).first()
+    myposts = Post.objects.filter(author=user)
+    post_ids = [post.id for post in myposts]
     if username:
         posts = Post.objects.all()
-        return render(request, 'board.html', {'posts': posts, 'user': username})
+        return render(request, 'board.html', {'posts': posts, 'user': username, 'myposts': post_ids})
     else:
         return redirect('login/')
 
 def newpost(request):
     title = request.POST.get('title')
     body = request.POST.get('body')
-
-    admin = User.objects.first()
-    p = Post(title=title, body=body, pub_date=timezone.now(), author=admin)
+    username = get_username(request)
+    user = User.objects.filter(username=username).first()
+    p = Post(title=title, body=body, pub_date=timezone.now(), author=user)
     p.save()
+    return redirect('/')
+
+def delete(request, id):
+    p = Post.objects.filter(id=id)
+    p.delete()
     return redirect('/')
 
 def logout(request):
