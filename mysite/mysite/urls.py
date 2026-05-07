@@ -20,11 +20,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("admin/", admin.site.urls), # comment out to fix security misconfiuguration
     path('', views.boardview, name='index'),
     path('post/', views.newpost, name='post'),
     path('login/', views.login, name='login'),
-    path('login/submit_login/', views.loginHandle, name='login'),
+    path('login/submit_login/', views.loginHandle),
     path('logout/', views.handleLogout, name='logout'),
     path('delete/<int:id>/', views.delete),
     # path('delete/', views.delete) # fix csrf

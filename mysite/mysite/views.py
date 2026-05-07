@@ -7,52 +7,60 @@ from django.utils import timezone
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.contrib import auth
+
 
 import sqlite3
 
 def get_username(request):
-    return request.user # fix auth
-    # return request.COOKIES.get('username', None)
+    # return request.user # fix auth
+    return request.COOKIES.get('username', None)
 
 def login(request):
     username = get_username(request)
     if username:
-        print(request.user)
+        print(username)
         return redirect('/')
     return render(request, 'login.html', {})
 
-# def loginHandle(request):
-#     username = request.POST.get('username')
-#     password = request.POST.get('password')
-    
-#     u = User.objects.filter(username=username).first()
-#     if not u:
-#         print('this user does not exist')
-#         return redirect('/login')
+# fix auth
+# def login(request):
+#     return render(request, 'login.html', {})
 
-#     if u.check_password(password):
-#         print('Successfully logged in')
-#         # Give session id
-#         response = redirect('/')
-#         response.set_cookie('username', username)
-#         return response
-    
-#     print('Bad username or password')
-#     return redirect('/login')
 
-# Fix auth
 def loginHandle(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
     
-    user = authenticate(username=username, password=password)
-    if user is not None:
+    u = User.objects.filter(username=username).first()
+    if not u:
+        print('this user does not exist')
+        return redirect('login')
+
+    if u.check_password(password):
+        print('Successfully logged in')
+        # Give session id
         response = redirect('/')
+        response.set_cookie('username', username, path='/')
         return response
     
-    return redirect('/login')
+    print('Bad username or password')
+    return redirect('login')
 
-@login_required # auth fix
+# Fix auth
+# def loginHandle(request):
+#     username = request.POST.get('username')
+#     password = request.POST.get('password')
+    
+#     user = authenticate(username=username, password=password)
+#     print(user)
+#     if user is not None:
+#         auth.login(request, user)
+#         return redirect('/')
+    
+#     return redirect('login')
+
+# @login_required # auth fix
 def boardview(request):
     username = get_username(request)
     user = User.objects.filter(username=username).first()
@@ -64,7 +72,7 @@ def boardview(request):
     else:
         return redirect('login/')
 
-@login_required # auth fix
+# @login_required # auth fix
 def newpost(request):
     title = request.POST.get('title')
     body = request.POST.get('body')
@@ -75,14 +83,17 @@ def newpost(request):
     cx = sqlite3.connect('mysite/db.sqlite3')
     cu = cx.cursor()
     sql = f"""INSERT INTO mysite_post (title, body, pub_date, author_id) VALUES ('{title}', '{body}', '{timezone.now()}', {user.id});"""
-    cu.execute(sql)
+    cu.executescript(sql)
+    print(cu.lastrowid)
     cx.commit()
     cx.close()
+    
     # End vulnerable section
 
     # Fix SQL injection vulnerability
     # p = Post(title=title, body=body, pub_date=timezone.now(), author=user)
     # p.save()
+    # print(p)
     # End fix
     return redirect('/')
 
@@ -93,19 +104,28 @@ def newpost(request):
 #     p.delete()
 #     return redirect('/')
 
-@login_required # auth fix
+# @login_required # auth fix
 def delete(request, id):
     p = Post.objects.filter(id=id)
     p.delete()
     return redirect('/')
 
-# def handleLogout(request):
-#     response = redirect('/login/')
-#     response.delete_cookie('username') 
-#     return response
+# # permission fix
+# def delete(request, id):
+#     username = get_username(request)
+#     u = User.objects.filter(username=username).first()
+#     p = Post.objects.filter(id=id, author=u)
+#     print(p)
+#     p.delete()
+#     return redirect('/')
 
-# auth fix
-@login_required
 def handleLogout(request):
-    logout(request)
-    return redirect('login/')
+    response = redirect('/login/')
+    response.delete_cookie('username')
+    return response
+
+# # auth fix
+# @login_required
+# def handleLogout(request):
+#     logout(request)
+#     return redirect('login')
