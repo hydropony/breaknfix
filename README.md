@@ -26,6 +26,11 @@ This app can be installed and run locally with [uv](https://docs.astral.sh/uv/).
    ```bash
    uv run python mysite/manage.py runserver
    ```
+6. Open http://localhost:8000/ in your browser. Pre-made account credentials are:
+    ```
+    admin:admin
+    bob:squarepants
+    ```
 
 ## Flaws
 
